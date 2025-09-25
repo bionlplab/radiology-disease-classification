@@ -7,10 +7,10 @@ import os
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 SAVE_STEP = 500
-tokenizer = AutoTokenizer.from_pretrained("/prj0129/yiw4018/reasoning/gemma-7b-it")
-output_dir="/prj0129/yiw4018/reasoning/final/models/gemma-7b-it/sft_result_only_format_2000"
-model="/prj0129/yiw4018/reasoning/gemma-7b-it"
-DATA_FILE = "/prj0129/yiw4018/reasoning/final/data/train/revised_data/training_sft_result_only_format_fmt2.csv"
+tokenizer = AutoTokenizer.from_pretrained("")
+output_dir=""
+model=""
+DATA_FILE = ""
 
 tokenizer.padding_side = 'left'
 tokenizer.pad_token = tokenizer.eos_token

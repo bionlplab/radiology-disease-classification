@@ -1,14 +1,5 @@
-import pandas as pd
 import json
-import pprint
-import ast
 
-# df = pd.read_csv("/prj0129/yiw4018/reasoning/hanley/qwen/result/sft_first/evaluation/sft_result_only_noformat_2000_grpo_2000_evaluate.csv")
-# response = df.loc[3, "evaluation"]
-# response = json.loads(response)
-# print(json.dumps(response, indent=2))
-# generated_disease = df.loc[1, "generated_disease"]
-# true_disease = df.loc[1, "true_disease_list"]
 
 def get_list(input):
     try:
@@ -58,15 +49,6 @@ def analyze_json_output(evaluation, generated_disease, true_disease):
             "inference_correct": len(set(target_diseases)&set(generated_disease)&set(true_disease))+len((set(target_diseases)-set(generated_disease))&(set(target_diseases)-set(true_disease)))
         }
     except Exception as e:
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(e)
         print(evaluation)
         return None
-
-# Run the function
-# analysis = analyze_json_output(response, generated_disease, true_disease)
-
-# # Print results
-# print(f"Generated diseases: {generated_disease}")
-# print(f"True diseases: {true_disease}")
-# pprint.pprint(analysis)

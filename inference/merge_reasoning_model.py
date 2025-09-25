@@ -1,12 +1,6 @@
 from vllm import LLM, SamplingParams
 import torch
 import pandas as pd
-from vllm.lora.request import LoRARequest
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import LoraConfig, get_peft_model, PeftConfig, PeftModel
-from prompts import simple_prompt, format_prompt2, format_prompt3, extract_think_answer, format_prompt4
-import os
-import re
 
 
 def merge_reason_with_disease_enemble(reason_0, reason_1, reason_2, reason_3, reason_4, disease_ensemble):
@@ -33,36 +27,30 @@ def merge_reason_with_disease_enemble(reason_0, reason_1, reason_2, reason_3, re
     ### Your summarized reasoning:
     """
 
-# OUTPUT_FILE = "midrc_gpt_training_source.csv"
-INPUT_FILE = "/prj0129/yiw4018/reasoning/final/result/mimic/llama/grpo_2000.csv"
-OUTPUT_FILE = "/prj0129/yiw4018/reasoning/final/result/mimic/llama/grpo_2000_model_reason.csv"
-MODEL_PATH = "/prj0129/yiw4018/george/meta-llama/Llama-3.1-8B"
-# os.makedirs(OUTPUT_PATH, exist_ok=True)
+
+INPUT_FILE = ""
+OUTPUT_FILE = ""
+MODEL_PATH = ""
 
 
 ENABLE_LORA = False
-LORA_NAME = "sft_result_only_format_1000_fmt2_grpo_2000_fmt3"
+LORA_NAME = ""
 LORA_ID = 116
-LORA_PATH = "/prj0129/yiw4018/reasoning/final/models/llama/sft_result_only_format_1000_fmt2_grpo_2000_fmt3/checkpoint-5500"
+LORA_PATH = ""
 lora_request=None
 
 sampling_params = SamplingParams(temperature=0.1, top_p=1, max_tokens=250)
 
 llm = LLM(
-    dtype=torch.bfloat16,  # Use bf16 for speed
+    dtype=torch.bfloat16,
     model=MODEL_PATH,
     enable_lora=ENABLE_LORA,
 )
 
 
-# Function to process a single row and return the results
 def process_row(reason_0, reason_1, reason_2, reason_3, reason_4, disease_ensemble):
-    # Define the prompt template
-    # prompt = generate_disease_prompt(note)
     prompt = merge_reason_with_disease_enemble(reason_0, reason_1, reason_2, reason_3, reason_4, disease_ensemble)
 
-    # while not generated_disease.startswith("[") or not generated_disease.endswith("]"):
-        # Call the OpenAI GPT-4 API using the chat.completions endpoint
     try:
         response = llm.generate(
             prompt,
@@ -88,10 +76,8 @@ def process_row(reason_0, reason_1, reason_2, reason_3, reason_4, disease_ensemb
 df = pd.read_csv(INPUT_FILE)
 print("CSV file read successfully.")
 
-# Initialize an empty list to store results
 results = []
 
-# Iterate over the dataframe rows
 for index, row in df.iterrows():
     try:
         reason0 = row[f"reason_0"]
@@ -113,13 +99,10 @@ for index, row in df.iterrows():
         result['true_disease_list'] = row['true_answer']
         results.append(result)
     except Exception as e:
-        print("!!!!!!!!!!!")
         print(f"Error processing row {index}: {e}")
 
-# Convert results to a DataFrame
 df_results = pd.DataFrame(results)
 
-# Save the DataFrame to a CSV file
 df_results.to_csv(OUTPUT_FILE, index=False)
 
 print("Processing complete. Result saved.")

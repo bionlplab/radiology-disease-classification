@@ -1,27 +1,20 @@
 
 import os
-import re
-import ast
-import json
 import pandas as pd
 from openai import AzureOpenAI
 
 from evaluation_prompt import gpt_evaluation_prompt, output_schema
 
-# OUTPUT_FILE = "midrc_gpt_training_source.csv"
-INPUT_FILE = "/prj0129/yiw4018/reasoning/final/result/mimic/llama/grpo_2000_model_reason.csv"
-OUTPUT_FILE = "/prj0129/yiw4018/reasoning/final/result/mimic/llama/grpo_2000_model_reason_evaluate.csv"
+
+INPUT_FILE = ""
+OUTPUT_FILE = ""
 SUFFIX = "_0"
-# os.makedirs(OUTPUT_PATH, exist_ok=True)
 
 
 # standard
-os.environ["AZURE_OPENAI_KEY"] = "Fg93u942u8otZOkwwPY5Q8l6QILr7VRNYs9a8JbOmbiTT3BySGW3JQQJ99BAACYeBjFXJ3w3AAABACOGqI9S"
-os.environ["AZURE_OPENAI_ENDPOINT"] = "https://yishu.openai.azure.com/openai/deployments/gpt-4o-2/chat/completions?api-version=2024-08-01-preview"
+os.environ["AZURE_OPENAI_KEY"] = ""
+os.environ["AZURE_OPENAI_ENDPOINT"] = ""
 
-# batch
-# os.environ["AZURE_OPENAI_KEY"] = "Fg93u942u8otZOkwwPY5Q8l6QILr7VRNYs9a8JbOmbiTT3BySGW3JQQJ99BAACYeBjFXJ3w3AAABACOGqI9S"
-# os.environ["AZURE_OPENAI_ENDPOINT"] = "https://yishu.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview"
 
 API_BASE = os.getenv("AZURE_OPENAI_ENDPOINT")
 API_KEY = os.getenv("AZURE_OPENAI_KEY")
@@ -35,14 +28,9 @@ client = AzureOpenAI(
 )
 
 
-# Function to process a single row and return the results
 def process_row(note, reasoning, disease):
-    # Define the prompt template
-    # prompt = generate_disease_prompt(note)
     prompt = gpt_evaluation_prompt(note, reasoning, disease)
 
-    # while not generated_disease.startswith("[") or not generated_disease.endswith("]"):
-        # Call the OpenAI GPT-4 API using the chat.completions endpoint
     try:
         response = client.chat.completions.create(
             model=DEPLOYMENT_NAME,
@@ -52,8 +40,8 @@ def process_row(note, reasoning, disease):
             ],
             response_format=output_schema,
             max_tokens=500,
-            temperature=0,  # smaller temperature is more focused (0 is deterministic)
-            top_p = 1  # default is 1, considers top_p probability mass, smaller is more deterministic
+            temperature=0,
+            top_p = 1
         )
         # Extract the generated IMPRESSION from the response
         response = response.choices[0].message.content
@@ -82,10 +70,8 @@ df['summarized_reason'] = df['summarized_reason'].apply(extract_before_empty_lin
 
 print("CSV file read successfully.")
 
-# Initialize an empty list to store results
 results = []
 
-# Iterate over the dataframe rows
 for index, row in df.iterrows():
     try:
         report = row['report']
@@ -100,13 +86,9 @@ for index, row in df.iterrows():
         result['true_disease_list'] = row['true_disease_list']
         results.append(result)
     except Exception as e:
-        print("!!!!!!!!!!!")
         print(f"Error processing row {index}: {e}")
 
-# Convert results to a DataFrame
 df_results = pd.DataFrame(results)
-
-# Save the DataFrame to a CSV file
 df_results.to_csv(OUTPUT_FILE, index=False)
 
 print("Processing complete. Result saved.")

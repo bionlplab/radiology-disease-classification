@@ -14,7 +14,7 @@ os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 from peft import LoraConfig, TaskType
 
-# LR=1e-4
+
 lora_config = LoraConfig(
     r=16,
     target_modules=["k_proj", "q_proj", "v_proj", "output_proj"],
@@ -24,12 +24,10 @@ lora_config = LoraConfig(
 )
 
 
-# LR=1e-6
-
-MODEL = "/prj0129/yiw4018/reasoning/final/models/llama/sft_result_only_format_2000_fmt2_not_full/checkpoint-500"
-tokenizer = AutoTokenizer.from_pretrained("/prj0129/yiw4018/reasoning/final/models/llama/sft_result_only_format_2000_fmt2_not_full/checkpoint-500")
-OUTPUT_DIR = "/prj0129/yiw4018/reasoning/final/models/llama/experimental/length"
-DATA_PATH = "/prj0129/yiw4018/reasoning/final/data/train/revised_data/mimic_training_2000_grpo_format3.csv"
+MODEL = ""
+tokenizer = AutoTokenizer.from_pretrained("")
+OUTPUT_DIR = ""
+DATA_PATH = ""
 
 tokenizer.pad_token = tokenizer.eos_token
 
