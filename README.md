@@ -13,4 +13,5 @@ gpt_evaluator.py: script to use GPT4-o to evaluate the reasoning comprehensivene
 
 ## analysis
 get_accuracy.py: get accuracy from the ensemble result
+
 evaluation_analysis: analyze the evaluation result from gpt_evaluator.py
